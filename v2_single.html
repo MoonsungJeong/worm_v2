@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <style>
+      * {
+        padding: 0;
+        margin: 0;
+      }
+
+      canvas {
+        background: #444444;
+        display: block;
+        margin: 0 auto;
+      }
+    </style>
+  </head>
+  <body>
+    <canvas id="myCanvas" width="640" height="540"></canvas>
+    <div style="margin-top: 1rem">
+      <a
+        href="index.html"
+        style="
+          font-weight: bold;
+          color: aquamarine;
+          background-color: #666666;
+          display: flex;
+          justify-content: center;
+        "
+      >
+        Double Play</a
+      >
+    </div>
+    <script>
+      var canvas = document.getElementById("myCanvas");
+      var ctx = canvas.getContext("2d");
+      var display = 540;
+      function makeWorm(name, hX, hY, degree, size, accel, h_color, b_color) {
+        this.name = name;
+        this.hX = hX;
+        this.hY = hY;
+        this.degree = degree;
+        this.size = size;
+        this.accel = accel;
+        this.h_color = h_color;
+        this.b_color = b_color;
+        this.body = [];
+        for (var i = 0; i < 21; i++) {
+          this.body.push({ x: this.hX, y: this.hY });
+        }
+      }
+      var p1 = new makeWorm(
+        "worm1",
+        canvas.width - 160,
+        canvas.height / 2,
+        180,
+        7,
+        1,
+        "#0095DD",
+        "#FF9500"
+      );
+      var p2 = new makeWorm(
+        "worm2",
+        canvas.width - 580,
+        canvas.height / 2,
+        0,
+        7,
+        1,
+        "#FF3300",
+        "#9933EE"
+      );
+
+      var brickSize = 3;
+      var bricks = [];
+
+      var posions = [];
+      var spikes = 6;
+      var P_OutLine = 6;
+      var P_InLine = 2;
+      var cnt = 0;
+
+      function toRadians(deg) {
+        return deg * (Math.PI / 180);
+      }
+      function toDegree(rad) {
+        return rad * (180 / Math.PI);
+      }
+      function drawBorder() {
+        ctx.beginPath();
+        ctx.moveTo(0, 0);
+        ctx.lineTo(display, 0);
+        ctx.moveTo(0, display);
+        ctx.lineTo(display, display);
+        ctx.moveTo(0, 0);
+        ctx.lineTo(0, display);
+        ctx.moveTo(display, 0);
+        ctx.lineTo(display, display);
+        ctx.stroke();
+      }
+      function draw() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        drawBorder();
+
+        drawWorm(p1);
+        //drawWorm(p2);
+        wormMove(p1);
+        //wormMove(p2);
+
+        collisionDetection(p1);
+        //collisionDetection(p2);
+        borderCheck(p1);
+        //borderCheck(p2);
+        //bodyCheck(p1,p2);
+        //bodyCheck(p2,p1);
+
+        if (!(cnt % 200)) {
+          makeBricks();
+        }
+        if (!(cnt % 200)) {
+          makePosions();
+          deletePosions();
+        }
+        drawPosions();
+        drawBricks();
+
+        control();
+
+        drawHowToP1();
+        //drawHowToP2();
+        Display();
+        condition();
+
+        cnt++;
+      }
+
+      var interval = setInterval(draw, 10);
+    </script>
+    <script src="sign.js"></script>
+    <script src="collision.js"></script>
+    <script src="wormObject.js"></script>
+    <script src="block.js"></script>
+    <script src="control.js"></script>
+  </body>
+</html>
